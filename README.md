@@ -51,7 +51,3 @@ The tmux config (`tmux/.tmux.conf`) includes some customizations for better work
 - Configured Catppuccin theme with rounded window status style
 - Added modules for CPU and battery status in the status line
 - Integrated TPM (Tmux Plugin Manager) and tmux-resurrect plugin for session persistence
-
----
-
-Enjoy your setup! 🚀
