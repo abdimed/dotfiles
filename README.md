@@ -132,9 +132,3 @@ If `p10k` doesn’t render correctly, ensure:
 
 - ✅ Arch Linux (EndeavourOS)
 - ✅ KDE Plasma 6 (Kitty + Dolphin)
-
----
-
-## 🐾 License
-
-Personal use only. Fork freely for inspiration.
