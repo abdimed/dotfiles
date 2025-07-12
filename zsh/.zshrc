@@ -1,6 +1,6 @@
-if [[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ "$SHLVL" -eq 1 ]]; then
-  paleofetch --config none --ascii_distro arch --colors 4 7 1 8 8 6
-fi
+# if [[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ "$SHLVL" -eq 1 ]]; then
+#   paleofetch --config none --ascii_distro arch --colors 4 7 1 8 8 6
+# fi
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -81,7 +81,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting nix-shell fast-syntax-highlighting zsh-autocomplete)
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting fast-syntax-highlighting nix-shell)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -122,3 +122,9 @@ alias xphp84='nix-shell -p php84'
 alias xphp82='nix-shell -p php82'
 alias pa='php artisan'
 alias nvim-kickstart='NVIM_APPNAME=nvim-kickstart nvim'
+alias forge='cd ~/Forge'
+
+source ~/.fzf/shell/key-bindings.zsh
+source ~/.fzf/shell/completion.zsh
+# Open in tmux popup if on tmux, otherwise use --height mode
+export FZF_DEFAULT_OPTS='--height 40% --tmux bottom,40% --layout default --border top'
