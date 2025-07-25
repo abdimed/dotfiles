@@ -24,6 +24,13 @@ return {
         end,
         desc = 'Toggle Zen Mode',
       },
+      {
+        '<leader>gg',
+        function()
+          Snacks.lazygit()
+        end,
+        desc = 'Lazygit',
+      },
     },
   },
 }
