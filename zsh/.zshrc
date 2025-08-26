@@ -121,7 +121,7 @@ export PATH=$PATH:/usr/local/go/bin
 alias xphp84='nix-shell -p php84'
 alias xphp82='nix-shell -p php82'
 alias pa='php artisan'
-alias nvim-kickstart='NVIM_APPNAME=nvim-kickstart nvim'
+alias nvim-me='NVIM_APPNAME=nvim-me nvim'
 alias forge='cd ~/Forge'
 
 source ~/.fzf/shell/key-bindings.zsh
