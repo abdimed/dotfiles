@@ -70,6 +70,14 @@ vim.keymap.set("n", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease window 
 vim.keymap.set("n", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
 vim.keymap.set("n", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
 
+-- Terminal
+vim.keymap.set("n", "<leader>t", function()
+	vim.cmd("split")
+	vim.cmd("wincmd J") -- Move window to bottom
+	vim.cmd("terminal")
+	vim.cmd("resize 15")
+end, { desc = "[T]erminal toggle (horizontal split)" })
+
 -- ===============================
 -- Buffer Commands
 -- ===============================
@@ -200,7 +208,6 @@ require("lazy").setup({
 					"markdown_inline",
 					"vim",
 					"vimdoc",
-					"php",
 				},
 				highlight = { enable = true, additional_vim_regex_highlighting = false },
 				indent = { enable = true },
@@ -411,7 +418,9 @@ require("lazy").setup({
 					vue = { "prettier" },
 					javascript = { "prettier" },
 					typescript = { "prettier" },
-					php = {"phpcbf"},
+					php = { "phpcbf" },
+					blade = { "blade-formatter" },
+					json = { "prettier" },
 				},
 				-- format_on_save = function(_)
 				-- 	return {
@@ -447,6 +456,7 @@ require("lazy").setup({
 				{ "<leader>b", group = "[B]uffer" },
 				{ "<leader>x", group = "E[x]tras" },
 				{ "<leader>u", group = "[U]i" },
+				{ "<leader>d", group = "[D]iff" },
 			},
 		},
 
@@ -579,6 +589,41 @@ require("lazy").setup({
 		end,
 	},
 
+	{
+		"sindrets/diffview.nvim",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		keys = {
+			{ "<leader>do", "<cmd>DiffviewOpen<cr>", desc = "Open diffview (HEAD vs working dir)" },
+			{ "<leader>dc", "<cmd>DiffviewClose<cr>", desc = "Close diffview" },
+			{ "<leader>dh", "<cmd>DiffviewFileHistory %<cr>", desc = "File history (current file)" },
+			{ "<leader>dH", "<cmd>DiffviewFileHistory<cr>", desc = "File history (repo)" },
+		},
+		config = function()
+			require("diffview").setup({
+				enhanced_diff_hl = true,
+				view = {
+					merge_tool = { layout = "diff3_horizontal" },
+				},
+			})
+		end,
+	},
+	{
+		"nvim-treesitter/nvim-treesitter-context",
+		lazy = true,
+		event = { "BufReadPost", "BufNewFile" }, -- load only when opening files
+		dependencies = { "nvim-treesitter/nvim-treesitter" },
+		config = function()
+			require("treesitter-context").setup({
+				enable = true, -- enable by default
+				max_lines = 3, -- max lines of context
+				trim_scope = "outer",
+				min_window_height = 0, -- no minimum window height
+				mode = "cursor", -- cursor determines context (or "topline")
+				zindex = 20, -- floating window z-index
+			})
+		end,
+	},
+
 	-- ColorScheme
 	{
 		"catppuccin/nvim",
@@ -639,4 +684,4 @@ require("lazy").setup({
 	},
 })
 
-vim.cmd.colorscheme("catppuccin")
+vim.cmd.colorscheme("tokyonight-night")
