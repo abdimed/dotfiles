@@ -17,7 +17,7 @@ vim.opt.mouse = "a" -- Enable mouse support in all modes (normal, visual, insert
 vim.opt.showmode = false -- Hide mode display (e.g., --INSERT--) in command line
 vim.opt.tabstop = 4 -- Number of spaces a tab character represents
 vim.opt.cursorline = true -- Highlight the line where the cursor is located
-vim.opt.cursorlineopt = "number"
+vim.opt.cursorlineopt = "both"
 vim.opt.confirm = true -- Prompt for confirmation when closing unsaved buffers
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
@@ -96,6 +96,8 @@ vim.keymap.set("n", "<leader>ba", "<cmd>%bd|e#<cr>", { desc = "[B]uffer delete [
 vim.keymap.set("n", "<leader>bl", "<cmd>ls<cr>", { desc = "[B]uffer [L]ist" })
 vim.keymap.set("n", "<leader>bo", "<cmd>%bd|e#<cr>", { desc = "[B]uffer [O]nly (delete others)" })
 
+vim.keymap.set("v", "<leader>a", ":'<,'>!column -t<CR>", { noremap = true, silent = true, desc = "[A]lign columns" })
+
 -- Quick buffer switching (numbered)
 for i = 1, 9 do
 	vim.keymap.set("n", "<leader>b" .. i, "<cmd>buffer " .. i .. "<cr>", { desc = "Go to buffer " .. i })
@@ -154,6 +156,7 @@ require("lazy").setup({
 				require("telescope.builtin").buffers({
 					sort_lastused = true,
 					ignore_current_buffer = true,
+					previewer = true,
 				})
 			end, { desc = "[F]ind [B]uffer" })
 			vim.keymap.set("n", "<leader>fw", builtin.grep_string, { desc = "[F]ind [W]ord under cursor" })
@@ -183,7 +186,7 @@ require("lazy").setup({
 			-- Git operations
 			vim.keymap.set("n", "<leader>gf", builtin.git_files, { desc = "[G]it [F]iles" })
 			vim.keymap.set("n", "<leader>gc", builtin.git_commits, { desc = "[G]it [C]ommits" })
-			vim.keymap.set("n", "<leader>gb", builtin.git_branches, { desc = "[G]it [B]ranches" })
+			vim.keymap.set("n", "<leader>gB", builtin.git_branches, { desc = "[G]it [B]ranches" })
 		end,
 	},
 
@@ -418,7 +421,7 @@ require("lazy").setup({
 					vue = { "prettier" },
 					javascript = { "prettier" },
 					typescript = { "prettier" },
-					php = { "phpcbf" },
+					php = { "intelephense" },
 					blade = { "blade-formatter" },
 					json = { "prettier" },
 				},
@@ -450,7 +453,6 @@ require("lazy").setup({
 			spec = {
 				{ "<leader>c", group = "[C]ode" },
 				{ "<leader>s", group = "[S]earch" },
-				{ "<leader>t", group = "[T]oggle" },
 				{ "<leader>g", group = "[G]it" },
 				{ "<leader>f", group = "[F]ind" },
 				{ "<leader>b", group = "[B]uffer" },
@@ -582,10 +584,61 @@ require("lazy").setup({
 	},
 
 	-- Autocomplete AI
+	-- {
+	-- 	"supermaven-inc/supermaven-nvim",
+	-- 	config = function()
+	-- 		require("supermaven-nvim").setup({})
+	-- 	end,
+	-- },
+
 	{
-		"supermaven-inc/supermaven-nvim",
+		"zbirenbaum/copilot.lua",
+		cmd = "Copilot",
+		event = "InsertEnter",
 		config = function()
-			require("supermaven-nvim").setup({})
+			require("copilot").setup({
+				panel = {
+					enabled = true,
+					auto_refresh = false,
+					keymap = {
+						jump_prev = "[[",
+						jump_next = "]]",
+						accept = "<CR>",
+						refresh = "gr",
+						open = "<M-CR>",
+					},
+					layout = {
+						position = "bottom",
+						ratio = 0.4,
+					},
+				},
+				suggestion = {
+					enabled = true,
+					auto_trigger = true,
+					debounce = 75,
+					keymap = {
+						accept = "<C-j>",
+						accept_word = "<C-l>",
+						accept_line = false,
+						next = "<C-k>",
+						prev = "<C-h>",
+						dismiss = "<C-]>",
+					},
+				},
+				filetypes = {
+					yaml = false,
+					markdown = false,
+					help = false,
+					gitcommit = false,
+					gitrebase = false,
+					hgcommit = false,
+					svn = false,
+					cvs = false,
+					["."] = false,
+				},
+				copilot_node_command = "node",
+				server_opts_overrides = {},
+			})
 		end,
 	},
 
@@ -621,6 +674,25 @@ require("lazy").setup({
 				mode = "cursor", -- cursor determines context (or "topline")
 				zindex = 20, -- floating window z-index
 			})
+		end,
+	},
+
+	{
+		"mg979/vim-visual-multi",
+		branch = "master",
+	},
+
+	{
+		"eandrju/cellular-automaton.nvim",
+		config = function()
+			vim.keymap.set("n", "<leader>mr", "<cmd>CellularAutomaton make_it_rain<CR>", { desc = "[M]ake it rain" })
+			vim.keymap.set(
+				"n",
+				"<leader>mg",
+				"<cmd>CellularAutomaton game_of_life<CR>",
+				{ desc = "[M]ake [G]ame of life" }
+			)
+			vim.keymap.set("n", "<leader>ms", "<cmd>CellularAutomaton scramble<CR>", { desc = "[M]ake [S]cramble" })
 		end,
 	},
 
