@@ -146,7 +146,6 @@ require("lazy").setup({
 		dependencies = { "nvim-lua/plenary.nvim" },
 		config = function()
 			local builtin = require("telescope.builtin")
-
 			-- Core telescope mappings
 			vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "[F]ind [F]iles" })
 			vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "[F]ind by [G]rep" })
@@ -160,11 +159,21 @@ require("lazy").setup({
 				})
 			end, { desc = "[F]ind [B]uffer" })
 			vim.keymap.set("n", "<leader>fw", builtin.grep_string, { desc = "[F]ind [W]ord under cursor" })
-
 			-- Special find operations
 			vim.keymap.set("n", "<leader>fA", function()
 				builtin.find_files({ hidden = true, no_ignore = true })
 			end, { desc = "[F]ind [A]LL files (even ignored)" })
+
+			vim.keymap.set("n", "<leader>fG", function()
+				builtin.live_grep({
+					additional_args = function(args)
+						local new_args = { unpack(args) }
+						table.insert(new_args, "--hidden")
+						table.insert(new_args, "--no-ignore")
+						return new_args
+					end,
+				})
+			end, { desc = "[F]ind by [G]rep ALL (hidden & ignored)" })
 
 			vim.keymap.set("n", "<leader>fn", function()
 				vim.cmd("Telescope find_files cwd=~/.config/nvim")
@@ -177,12 +186,14 @@ require("lazy").setup({
 			vim.keymap.set("n", "<leader>fr", function()
 				require("telescope.builtin").oldfiles()
 			end, { desc = "[F]ind [r]ecent" })
+
 			vim.keymap.set("n", "<leader>/", function()
 				builtin.current_buffer_fuzzy_find(require("telescope.themes").get_dropdown({
 					winblend = 10,
 					previewer = false,
 				}))
 			end, { desc = "[/] Fuzzily search in current buffer" })
+
 			-- Git operations
 			vim.keymap.set("n", "<leader>gf", builtin.git_files, { desc = "[G]it [F]iles" })
 			vim.keymap.set("n", "<leader>gc", builtin.git_commits, { desc = "[G]it [C]ommits" })
@@ -473,7 +484,7 @@ require("lazy").setup({
 		},
 	},
 
-	{ "nvim-tree/nvim-web-devicons", opts = {} },
+	-- { "nvim-tree/nvim-web-devicons", opts = {} },
 
 	{ -- Collection of various small independent plugins/modules
 		"echasnovski/mini.nvim",
@@ -498,7 +509,25 @@ require("lazy").setup({
 			require("mini.cursorword").setup()
 		end,
 	},
-
+	{
+		"nvim-mini/mini.icons",
+		lazy = true,
+		opts = {
+			file = {
+				[".keep"] = { glyph = "󰊢", hl = "MiniIconsGrey" },
+				["devcontainer.json"] = { glyph = "", hl = "MiniIconsAzure" },
+			},
+			filetype = {
+				dotenv = { glyph = "", hl = "MiniIconsYellow" },
+			},
+		},
+		init = function()
+			package.preload["nvim-web-devicons"] = function()
+				require("mini.icons").mock_nvim_web_devicons()
+				return package.loaded["nvim-web-devicons"]
+			end
+		end,
+	},
 	{
 		"folke/todo-comments.nvim",
 		cmd = { "TodoTrouble", "TodoTelescope" },
@@ -732,12 +761,25 @@ require("lazy").setup({
 		"folke/tokyonight.nvim",
 		lazy = false,
 		priority = 1000,
-		opts = {},
+		opts = {
+			transparent = true,
+			styles = {
+				sidebars = "transparent",
+				floats = "transparent",
+			},
+		},
 	},
 
 	{
 		"rose-pine/neovim",
 		name = "rose-pine",
+		opts = {
+			transparent = true,
+			styles = {
+				sidebars = "transparent",
+				floats = "transparent",
+			},
+		},
 	},
 
 	{
@@ -756,4 +798,4 @@ require("lazy").setup({
 	},
 })
 
-vim.cmd.colorscheme("tokyonight-night")
+vim.cmd.colorscheme("rose-pine")

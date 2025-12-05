@@ -123,9 +123,14 @@ alias xphp82='nix-shell -p php82'
 alias pa='php artisan'
 alias nvim-me='NVIM_APPNAME=nvim-me nvim'
 alias forge='cd ~/Forge'
+alias nrd='npm run dev'
 
 source ~/.fzf/shell/key-bindings.zsh
 source ~/.fzf/shell/completion.zsh
 # Open in tmux popup if on tmux, otherwise use --height mode
 export FZF_DEFAULT_OPTS='--height 40% --tmux bottom,40% --layout default --border top'
 export PATH="$HOME/.npm-global/bin:$PATH"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

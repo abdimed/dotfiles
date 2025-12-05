@@ -1,0 +1,151 @@
+/*******************************************************************************
+ * ROFI TOKYO NIGHT THEME
+ * Based on the Tokyo Night color scheme with transparency and blur
+ ******************************************************************************/
+
+* {
+    /* Tokyo Night Colors */
+    bg0:     #1a1b26;    /* Background */
+    bg1:     #24283bdd;    /* Slightly lighter bg */
+    bg2:     #414868;    /* Selection background */
+    bg3:     #565f89;    /* Border color */
+    
+    fg0:     #c0caf5;    /* Foreground text */
+    fg1:     #a9b1d6;    /* Secondary text */
+    
+    red:     #f7768e;
+    orange:  #ff9e64;
+    yellow:  #e0af68;
+    green:   #9ece6a;
+    cyan:    #7dcfff;
+    blue:    #7aa2f7;
+    magenta: #bb9af7;
+    pink:    #ff007c;
+
+    background-color: transparent;
+    text-color:       @fg0;
+    
+    font: "JetBrains Mono 10";
+}
+
+window {
+	background-color: #1a1b26dd; 
+    border:           2px;
+    border-color:     @blue;
+    border-radius:    12px;
+    width:            800px;
+    padding:          0px;
+    children:         [ horibox ];
+}
+
+horibox {
+    background-color: transparent;
+    orientation:      horizontal;
+    children:         [ image-element, mainbox ];
+}
+
+mainbox {
+    background-color: transparent;
+    spacing:          15px;
+    padding:          15px;
+    children:         [ message, listview ];
+}
+
+image-element {
+    background-image: url("~/.config/rofi/wcat.gif", height);
+    background-color: @bg1;
+    width:            400px;
+    border-radius:    12px 0px 0px 12px;
+    expand:           false;
+    size:             300px;
+	children:		  [ inputbar ];
+}
+
+inputbar {
+    background-color: @bg1;
+    text-color:       @fg0;
+    border-radius:    8px;
+    padding:          12px 16px;
+    spacing:          10px;
+	margin:           10px 10px 10px 10px;
+    children:         [ prompt, entry ];
+}
+
+prompt {
+    background-color: transparent;
+    text-color:       @blue;
+    font:             "JetBrains Mono Bold 12";
+}
+
+entry {
+    background-color: transparent;
+    text-color:       @fg0;
+    placeholder:      "Search...";
+    placeholder-color: @fg1;
+}
+
+message {
+    background-color: @bg1;
+    border-radius:    8px;
+    padding:          10px;
+}
+
+textbox {
+    background-color: transparent;
+    text-color:       @fg0;
+}
+
+listview {
+    background-color: transparent;
+    spacing:          5px;
+    scrollbar:        true;
+    lines:            8;
+}
+
+scrollbar {
+    background-color: @bg1;
+    handle-color:     @blue;
+    handle-width:     6px;
+    border-radius:    4px;
+    margin:           0px 0px 0px 5px;
+}
+
+element {
+    background-color: transparent;
+    text-color:       @fg1;
+    border-radius:    6px;
+    padding:          8px 12px;
+}
+
+element selected {
+    background-color: @bg2;
+    text-color:       @cyan;
+}
+
+element-text {
+    background-color: transparent;
+    text-color:       inherit;
+}
+
+element-icon {
+    background-color: transparent;
+    size:             1.2em;
+    margin:           0px 8px 0px 0px;
+}
+
+mode-switcher {
+    background-color: transparent;
+    spacing:          10px;
+}
+
+button {
+    background-color: @bg1;
+    text-color:       @fg1;
+    border-radius:    6px;
+    padding:          8px 16px;
+}
+
+button selected {
+    background-color: @blue;
+    text-color:       @bg0;
+}

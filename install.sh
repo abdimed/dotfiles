@@ -56,7 +56,7 @@ else
 fi
 
 # Replace LazyVim config
-echo "📁 Replacing LazyVim config..."
+echo "📁 Replacing Neovim config..."
 rm -rf ~/.config/nvim
 ln -sf ~/dotfiles/nvim ~/.config/nvim
 
