@@ -8,22 +8,30 @@ return {
 			bigfile = { enabled = true },
 			dashboard = { enabled = true },
 			indent = { enabled = true },
-			explorer = { enabled = true },
+			explorer = { enabled = false },
 			notifier = { enabled = false },
 			quickfile = { enabled = false },
 			scope = { enabled = false },
 			scroll = { enabled = false },
 			statuscolumn = { enabled = false },
 			words = { enabled = false },
+			picker = {
+				sources = {
+					explorer = {
+						hidden = true,
+						ignored = true,
+					},
+				},
+			},
 		},
 		keys = {
-			{
-				"<leader>e",
-				function()
-					Snacks.explorer()
-				end,
-				desc = "File Explorer",
-			},
+			-- {
+			-- 	"<leader>e",
+			-- 	function()
+			-- 		Snacks.explorer()
+			-- 	end,
+			-- 	desc = "File Explorer",
+			-- },
 
 			{
 				"<leader>gg",

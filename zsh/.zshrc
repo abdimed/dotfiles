@@ -1,3 +1,5 @@
+eval "$(starship init zsh)"
+#
 # if [[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ "$SHLVL" -eq 1 ]]; then
 #   paleofetch --config none --ascii_distro arch --colors 4 7 1 8 8 6
 # fi
@@ -5,9 +7,6 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
@@ -19,7 +18,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="powerlevel10k/powerlevel10k"
+ZSH_THEME=""
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -115,7 +114,6 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 export PATH="$HOME/.config/composer/vendor/bin:$PATH"
 export PATH=$PATH:/usr/local/go/bin
 alias xphp84='nix-shell -p php84'
@@ -124,13 +122,18 @@ alias pa='php artisan'
 alias nvim-me='NVIM_APPNAME=nvim-me nvim'
 alias forge='cd ~/Forge'
 alias nrd='npm run dev'
-
+alias ls='eza -lh --icons=auto --group-directories-first'
+alias lt='eza --tree --icons --level=2 --long --git'
+alias lta='lt -a'
 source ~/.fzf/shell/key-bindings.zsh
 source ~/.fzf/shell/completion.zsh
 # Open in tmux popup if on tmux, otherwise use --height mode
-export FZF_DEFAULT_OPTS='--height 40% --tmux bottom,40% --layout default --border top'
+export FZF_DEFAULT_OPTS='--tmux center,80%,80% --layout default --border rounded --preview-window "right:55%:border-left" --preview "if [ -d {} ]; then eza -lh --icons=auto --group-directories-first --color=always {}; else bat --color=always --style=numbers {}; fi" --prompt "  " --pointer "▸" --marker "▪"'
+
 export PATH="$HOME/.npm-global/bin:$PATH"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+export PATH="$HOME/.local/bin:$PATH"

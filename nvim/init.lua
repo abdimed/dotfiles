@@ -9,6 +9,7 @@ vim.opt.breakindent = true -- Align wrapped lines with the original line's inden
 vim.opt.signcolumn = "yes" -- Always show sign column to avoid layout shifts
 vim.opt.wrap = false -- Disable line wrapping for long lines
 vim.opt.termguicolors = true -- Enable 24-bit RGB color support for better colors
+vim.opt.colorcolumn = "120"
 vim.opt.clipboard = "unnamedplus" -- Sync clipboard with system clipboard
 vim.opt.ignorecase = true -- Make searches case-insensitive...
 vim.opt.smartcase = true -- ...unless the search contains capital letters
@@ -16,11 +17,13 @@ vim.opt.undofile = true -- Enable persistent undo across sessions
 vim.opt.mouse = "a" -- Enable mouse support in all modes (normal, visual, insert, etc.)
 vim.opt.showmode = false -- Hide mode display (e.g., --INSERT--) in command line
 vim.opt.tabstop = 4 -- Number of spaces a tab character represents
+vim.opt.expandtab = true -- Use spaces instead of tab characters
 vim.opt.cursorline = true -- Highlight the line where the cursor is located
 vim.opt.cursorlineopt = "both"
 vim.opt.confirm = true -- Prompt for confirmation when closing unsaved buffers
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
+vim.o.showtabline = 0
 
 -- ===============================
 -- Leader Key
@@ -113,6 +116,60 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	end,
 })
 
+-- Delete trailing whitespace on save
+vim.api.nvim_create_autocmd("BufWritePre", {
+	pattern = "*",
+	callback = function()
+		local save = vim.fn.winsaveview()
+		vim.cmd([[%s/\s\+$//e]])
+		vim.fn.winrestview(save)
+	end,
+})
+
+-- Resize splits when window is resized
+vim.api.nvim_create_autocmd("VimResized", {
+	callback = function()
+		vim.cmd("tabdo wincmd =")
+	end,
+})
+
+-- Go to last cursor position when reopening a file
+vim.api.nvim_create_autocmd("BufReadPost", {
+	callback = function()
+		local mark = vim.api.nvim_buf_get_mark(0, '"')
+		if mark[1] > 1 and mark[1] <= vim.api.nvim_buf_line_count(0) then
+			vim.api.nvim_win_set_cursor(0, mark)
+		end
+	end,
+})
+
+-- Auto-create missing directories when saving a file
+vim.api.nvim_create_autocmd("BufWritePre", {
+	callback = function(event)
+		local dir = vim.fn.fnamemodify(event.match, ":p:h")
+		if vim.fn.isdirectory(dir) == 0 then
+			vim.fn.mkdir(dir, "p")
+		end
+	end,
+})
+
+-- Disable line numbers in terminal buffers
+vim.api.nvim_create_autocmd("TermOpen", {
+	callback = function()
+		vim.opt_local.number = false
+		vim.opt_local.relativenumber = false
+		vim.cmd("startinsert") -- enter insert mode automatically
+	end,
+})
+
+-- Close certain buffers with just 'q'
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "help", "man", "qf", "notify", "lspinfo", "checkhealth" },
+	callback = function()
+		vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = true })
+	end,
+})
+
 -- ===============================
 -- Plugin Manager: lazy.nvim
 -- ===============================
@@ -131,6 +188,36 @@ if not vim.loop.fs_stat(lazypath) then
 	end
 end
 vim.opt.rtp:prepend(lazypath)
+
+-- ===============================
+-- Colorscheme Cycling
+-- ===============================
+
+local colorschemes = vim.fn.getcompletion("", "color")
+local cs_index = 1
+
+-- Sync index with current colorscheme
+for i, name in ipairs(colorschemes) do
+	if name == vim.g.colors_name then
+		cs_index = i
+		break
+	end
+end
+
+local function next_colorscheme()
+	cs_index = cs_index % #colorschemes + 1
+	pcall(vim.cmd, "colorscheme " .. colorschemes[cs_index])
+	vim.notify("Colorscheme: " .. colorschemes[cs_index])
+end
+
+local function prev_colorscheme()
+	cs_index = (cs_index - 2 + #colorschemes) % #colorschemes + 1
+	pcall(vim.cmd, "colorscheme " .. colorschemes[cs_index])
+	vim.notify("Colorscheme: " .. colorschemes[cs_index])
+end
+
+vim.keymap.set("n", "<leader>un", next_colorscheme, { desc = "[U]I Next colorscheme" })
+vim.keymap.set("n", "<leader>up", prev_colorscheme, { desc = "[U]I Previous colorscheme" })
 
 -- ===============================
 -- Install Plugins
@@ -579,7 +666,6 @@ require("lazy").setup({
 			},
 		},
 	},
-
 	{
 		"nvim-telescope/telescope-project.nvim",
 		dependencies = {
@@ -665,7 +751,7 @@ require("lazy").setup({
 					cvs = false,
 					["."] = false,
 				},
-				copilot_node_command = "node",
+				copilot_node_command = "/home/abdimed/.nvm/versions/node/v22.21.1/bin/node",
 				server_opts_overrides = {},
 			})
 		end,
@@ -674,11 +760,58 @@ require("lazy").setup({
 	{
 		"sindrets/diffview.nvim",
 		dependencies = { "nvim-lua/plenary.nvim" },
+		cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory" },
 		keys = {
 			{ "<leader>do", "<cmd>DiffviewOpen<cr>", desc = "Open diffview (HEAD vs working dir)" },
 			{ "<leader>dc", "<cmd>DiffviewClose<cr>", desc = "Close diffview" },
 			{ "<leader>dh", "<cmd>DiffviewFileHistory %<cr>", desc = "File history (current file)" },
 			{ "<leader>dH", "<cmd>DiffviewFileHistory<cr>", desc = "File history (repo)" },
+			{
+				"<leader>db",
+				function()
+					local actions = require("telescope.actions")
+					local action_state = require("telescope.actions.state")
+					require("telescope.builtin").git_branches({
+						attach_mappings = function(_, map)
+							map("i", "<CR>", function(bufnr)
+								local branch = action_state.get_selected_entry().value
+								actions.close(bufnr)
+								vim.cmd("DiffviewOpen " .. branch)
+							end)
+							map("n", "<CR>", function(bufnr)
+								local branch = action_state.get_selected_entry().value
+								actions.close(bufnr)
+								vim.cmd("DiffviewOpen " .. branch)
+							end)
+							return true
+						end,
+					})
+				end,
+				desc = "Open diffview with [b]ranch (picker)",
+			},
+			{
+				"<leader>dC",
+				function()
+					local actions = require("telescope.actions")
+					local action_state = require("telescope.actions.state")
+					require("telescope.builtin").git_commits({
+						attach_mappings = function(_, map)
+							map("i", "<CR>", function(bufnr)
+								local hash = action_state.get_selected_entry().value
+								actions.close(bufnr)
+								vim.cmd("DiffviewOpen " .. hash .. "^!")
+							end)
+							map("n", "<CR>", function(bufnr)
+								local hash = action_state.get_selected_entry().value
+								actions.close(bufnr)
+								vim.cmd("DiffviewOpen " .. hash .. "^!")
+							end)
+							return true
+						end,
+					})
+				end,
+				desc = "Open diffview for [C]ommit (picker)",
+			},
 		},
 		config = function()
 			require("diffview").setup({
@@ -709,6 +842,45 @@ require("lazy").setup({
 	{
 		"mg979/vim-visual-multi",
 		branch = "master",
+	},
+
+	{
+		"nvim-neo-tree/neo-tree.nvim",
+		branch = "v3.x",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"MunifTanjim/nui.nvim",
+			"nvim-tree/nvim-web-devicons",
+		},
+		keys = {
+			{ "<leader>e", ":Neotree toggle<CR>", desc = "Toggle Neo-tree" },
+			{ "<leader>be", ":Neotree focus<CR>", desc = "Focus Neo-tree" },
+		},
+		opts = {
+			close_if_last_window = true,
+			filesystem = {
+				filtered_items = {
+					visible = true,
+				},
+				follow_current_file = {
+					enabled = true,
+				},
+			},
+		},
+	},
+
+	{
+		"akinsho/bufferline.nvim",
+		dependencies = { "nvim-mini/mini.icons" },
+		opts = {
+			options = {
+				mode = "buffers",
+				diagnostics = "nvim_lsp",
+				show_buffer_close_icons = true,
+				show_close_icon = false,
+				separator_style = "thin",
+			},
+		},
 	},
 
 	{
@@ -798,4 +970,4 @@ require("lazy").setup({
 	},
 })
 
-vim.cmd.colorscheme("rose-pine")
+vim.cmd.colorscheme("tokyonight")
