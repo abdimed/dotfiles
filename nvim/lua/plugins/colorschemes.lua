@@ -28,5 +28,18 @@ return {
 	{ "Mofiqul/dracula.nvim", name = "dracula", lazy = true },
 	{ "shaunsingh/nord.nvim", lazy = true },
 	{ "AlexvZyl/nordic.nvim", lazy = true, config = function() require("nordic").load() end },
-	{ "loctvl842/monokai-pro.nvim", lazy = true, config = function() require("monokai-pro").setup() end },
+	{
+		"loctvl842/monokai-pro.nvim",
+		lazy = true,
+		config = function()
+			require("monokai-pro").setup({
+				filter = "ristretto",
+				background_clear = { "toggleterm", "telescope", "renamer", "notify", "neo-tree" },
+			})
+		end,
+	},
+	{ "oldjobobo/retro-82.nvim", lazy = true, opts = { transparent = false, terminal_colors = true } },
+	{ "tahayvr/matteblack.nvim", lazy = true, config = function() end },
+	{ "omacom-io/lumon.nvim", lazy = true, config = function() vim.o.background = "dark" end },
+	{ "neanias/everforest-nvim", lazy = true, config = function() require("everforest").setup({}) end },
 }
