@@ -4,7 +4,7 @@ return {
 		event = "VeryLazy",
 		opts = {
 			lsp = {
-				signature = { enabled = true },
+				signature = { enabled = false },
 				hover = { enabled = true },
 			},
 			presets = {

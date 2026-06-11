@@ -21,7 +21,7 @@ return {
 			if #clients > 0 and clients[1].config.root_dir then
 				return vim.fn.fnamemodify(clients[1].config.root_dir, ":~")
 			end
-			return vim.fn.fnamemodify(vim.loop.cwd(), ":~")
+			return vim.fn.fnamemodify(vim.uv.cwd(), ":~")
 		end
 
 		local function pretty_path()

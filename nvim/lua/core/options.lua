@@ -1,0 +1,32 @@
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+vim.o.showtabline = 0
+
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
+vim.opt.tabstop = 4
+vim.opt.expandtab = true
+vim.opt.smartindent = true
+vim.opt.breakindent = true
+vim.opt.wrap = false
+vim.opt.signcolumn = "yes"
+vim.opt.colorcolumn = "120"
+vim.opt.cursorline = true
+vim.opt.cursorlineopt = "both"
+vim.opt.termguicolors = true
+vim.opt.clipboard = "unnamedplus"
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.undofile = true
+vim.opt.mouse = "a"
+vim.opt.showmode = false
+vim.opt.confirm = true
+vim.opt.scrolloff = 8
+vim.opt.splitright = true
+vim.opt.splitbelow = true
+vim.opt.updatetime = 250
